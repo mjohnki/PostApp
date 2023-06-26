@@ -19,6 +19,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        lint {
+            baseline = file("lint-baseline.xml")
+        }
     }
 
     buildTypes {
