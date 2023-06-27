@@ -1,31 +1,22 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
 }
 
 android {
-    namespace = "de.johnki.postapp"
+    namespace = "de.johnki.data"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "de.johnki.postapp"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-
-        lint {
-            baseline = file("lint-baseline.xml")
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -44,32 +35,21 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":feature:login")))
-
-    // navigation
-    implementation(libs.navigation.ui)
-
-    // compose
-    implementation(libs.activity.compose)
-    implementation(libs.ui)
-    implementation(libs.material3)
 
     // di
     implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
+
+    // db
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
+
+    // test
+    testImplementation(libs.bundles.unittest)
 }
