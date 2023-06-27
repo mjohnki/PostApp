@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "PostApp"
 include(":app")
- 
+include(":feature:login")
+include(":data")
