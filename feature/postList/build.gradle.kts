@@ -3,13 +3,12 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
 }
 
 android {
-    namespace = "de.johnki.data"
+    namespace = "de.johnki.postlist"
     compileSdk = 33
 
     defaultConfig {
@@ -28,6 +27,9 @@ android {
             )
         }
     }
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,26 +37,36 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    lint {
-        baseline = file("lint-baseline.xml")
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":data")))
+
+    // statemachine
+    implementation(libs.statemachine)
+    implementation(libs.statemachine.coroutines)
+
+    // compose
+    implementation(libs.material3)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.lifecycle)
+    implementation(libs.compose.constraintlayout)
+
+    // logging
+    implementation(libs.timber)
+
 
     // di
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
-
-    // db
-    implementation(libs.bundles.room)
-    ksp(libs.room.compiler)
 
     // test
     testImplementation(libs.bundles.unittest)
-
-    // http
-    implementation(libs.retrofit.client)
-    implementation(libs.retrofit.converter)
-    implementation(libs.retrofit.logging)
 }

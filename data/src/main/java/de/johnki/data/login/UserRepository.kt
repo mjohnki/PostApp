@@ -6,4 +6,6 @@ internal class UserRepository(
     suspend fun insert(user: UserImpl){
         dao.insert(user)
     }
+
+    suspend fun find() : UserImpl = dao.find()
 }
