@@ -59,6 +59,7 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":feature:login")))
+    implementation(project(mapOf("path" to ":feature:postList")))
 
     // navigation
     implementation(libs.navigation.ui)

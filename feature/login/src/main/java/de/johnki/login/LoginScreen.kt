@@ -18,14 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), goToPosts: () -> Unit) {
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), goToPosts: @Composable () -> Unit) {
 
     val state: LoginUiState by viewModel.state.collectAsStateWithLifecycle()
 

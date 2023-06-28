@@ -17,3 +17,4 @@ rootProject.name = "PostApp"
 include(":app")
 include(":feature:login")
 include(":data")
+include(":feature:postList")

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import de.johnki.login.LoginScreen
 import de.johnki.postapp.ui.theme.PostAppTheme
+import de.johnki.postlist.PostListScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -25,23 +27,38 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    NavHost(
-                        navController = navController,
-                        startDestination = loginPath)
-                    {
-                        composable(route = loginPath){
-                            LoginScreen{
-                                navController.navigate(loginPath)
-                            }
-                        }
-                    }
+                    LoginScreen(goToPosts = {
+                        PostListScreen(goToComments = {
+
+                        })
+                    })
                 }
             }
         }
     }
 
-    private companion object {
+    companion object {
         const val loginPath = "/Login"
+        const val postListPath = "/Posts"
+    }
+}
+
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = MainActivity.loginPath
+    )
+    {
+        composable(route = MainActivity.loginPath){
+
+        }
+        composable(route = MainActivity.postListPath){
+            PostListScreen{
+                navController.navigate(MainActivity.loginPath)
+            }
+        }
     }
 }
