@@ -21,44 +21,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PostAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LoginScreen(goToPosts = {
-                        PostListScreen(goToComments = {
-
-                        })
-                    })
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val loginPath = "/Login"
-        const val postListPath = "/Posts"
-    }
-}
-
-@Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = MainActivity.loginPath
-    )
-    {
-        composable(route = MainActivity.loginPath){
-
-        }
-        composable(route = MainActivity.postListPath){
-            PostListScreen{
-                navController.navigate(MainActivity.loginPath)
-            }
+            MainScreen()
         }
     }
 }

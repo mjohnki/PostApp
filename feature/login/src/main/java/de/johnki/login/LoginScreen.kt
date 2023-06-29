@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), goToPosts: @Composable () -> Unit) {
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
     val state: LoginUiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -39,7 +39,6 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), goToPosts: @Composa
             is LoginUiState.Content -> ContentState(uiState.showError) {
                 viewModel.process(LoginEvent.LoginClicked(it))
             }
-            LoginUiState.LoginSuccessful -> goToPosts()
         }
     }
 }

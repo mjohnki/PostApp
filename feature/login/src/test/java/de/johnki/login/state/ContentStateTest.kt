@@ -4,7 +4,8 @@ import com.motorro.commonstatemachine.CommonStateMachine
 import de.johnki.data.login.LoginUseCase
 import de.johnki.login.LoginEvent
 import de.johnki.login.LoginUiState
-import io.mockk.coEvery
+import de.johnki.navigation.AppNavigator
+import de.johnki.navigation.Destination
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -25,6 +26,7 @@ class ContentStateTest {
 
     private val stateMachine: CommonStateMachine<LoginEvent, LoginUiState> = mockk(relaxed = true)
     private val factory: LoginStateFactory = mockk()
+    private val appNavigator: AppNavigator = mockk(relaxUnitFun = true)
     private val loginUseCase: LoginUseCase = mockk(relaxUnitFun = true)
 
     @Before
@@ -41,7 +43,7 @@ class ContentStateTest {
     fun start_should_display_Content() = runTest {
         // given:
         val showError = false
-        val state = ContentState(showError, loginUseCase, factory)
+        val state = ContentState(showError, loginUseCase, appNavigator, factory)
 
         // when:
         state.start(stateMachine)
@@ -57,10 +59,8 @@ class ContentStateTest {
         // given:
         val userId = "1"
         val gesture = LoginEvent.LoginClicked(userId)
-        val state = ContentState(false, loginUseCase, factory)
+        val state = ContentState(false, loginUseCase, appNavigator, factory)
         state.start(stateMachine)
-        val loginSuccessful = LoginSuccessfulState()
-        coEvery { factory.loginSuccessful() } returns loginSuccessful
 
         // when:
         state.process(gesture)
@@ -68,7 +68,7 @@ class ContentStateTest {
 
         // then:
         coVerify { loginUseCase.login(any()) }
-        verify { stateMachine.setMachineState(loginSuccessful) }
+        coVerify { appNavigator.navigateTo(Destination.PostListScreen()) }
     }
 
     @Test
@@ -76,9 +76,9 @@ class ContentStateTest {
         // given:
         val userId = ""
         val gesture = LoginEvent.LoginClicked(userId)
-        val state = ContentState(false, loginUseCase, factory)
+        val state = ContentState(false, loginUseCase, appNavigator, factory)
         state.start(stateMachine)
-        val error = ContentState(true, loginUseCase, factory)
+        val error = ContentState(true, loginUseCase, appNavigator,  factory)
         every { factory.content(true) } returns error
 
         // when:
@@ -95,9 +95,9 @@ class ContentStateTest {
         // given:
         val userId = "m"
         val gesture = LoginEvent.LoginClicked(userId)
-        val state = ContentState(false, loginUseCase, factory)
+        val state = ContentState(false, loginUseCase, appNavigator, factory)
         state.start(stateMachine)
-        val error = ContentState(true, loginUseCase, factory)
+        val error = ContentState(true, loginUseCase, appNavigator, factory)
         every { factory.content(true) } returns error
 
         // when:

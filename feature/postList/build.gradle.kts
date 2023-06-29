@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":navigation")))
 
     // statemachine
     implementation(libs.statemachine)
