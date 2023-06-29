@@ -4,6 +4,8 @@ import com.motorro.commonstatemachine.CommonStateMachine
 import de.johnki.data.post.FindFavPostsUseCase
 import de.johnki.data.post.Post
 import de.johnki.data.post.ToggleFavForPostUseCase
+import de.johnki.navigation.AppNavigator
+import de.johnki.navigation.Destination
 import de.johnki.postlist.PostListEvent
 import de.johnki.postlist.PostListUiState
 import io.mockk.coEvery
@@ -30,6 +32,7 @@ class FavedPostsStateTest {
     private val factory: PostListStateFactory = mockk()
     private val findFavPostsUseCase: FindFavPostsUseCase = mockk(relaxUnitFun = true)
     private val toggleFavForPostUseCase: ToggleFavForPostUseCase = mockk(relaxUnitFun = true)
+    private val appNavigator: AppNavigator = mockk(relaxUnitFun = true)
     private val posts = flow<List<Post>> { emptyList<Post>() }
 
     @Before
@@ -46,7 +49,7 @@ class FavedPostsStateTest {
     @Test
     fun start_should_display_FavPosts() = runTest {
         // given:
-        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase)
+        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase, appNavigator)
 
         // when:
         state.start(stateMachine)
@@ -61,17 +64,16 @@ class FavedPostsStateTest {
     fun doProcess_should_goto_gotoComments_state_when_post_is_clicked() = runTest {
         // given:
         val postId = 1
-        val goToCommentsState: GoToCommentsState = mockk()
         val event = PostListEvent.PostClicked(postId)
-        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase)
+        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase, appNavigator)
         state.start(stateMachine)
-        every { factory.gotoComments(postId) } returns goToCommentsState
 
         // when:
         state.process(event)
+        advanceUntilIdle()
 
         // when:
-        verify { stateMachine.setMachineState(goToCommentsState) }
+        coVerify { appNavigator.navigateTo(Destination.PostListScreen()) }
     }
 
     @Test
@@ -79,7 +81,7 @@ class FavedPostsStateTest {
         // given:
         val allPosts: AllPostsState = mockk()
         val event = PostListEvent.ShowAllPostClicked
-        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase)
+        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase, appNavigator)
         state.start(stateMachine)
         every { factory.allPosts() } returns allPosts
 
@@ -95,7 +97,7 @@ class FavedPostsStateTest {
         // given:
         val postId = 1
         val event = PostListEvent.PostFavedClicked(postId)
-        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase)
+        val state = FavedPostsState(factory, findFavPostsUseCase, toggleFavForPostUseCase, appNavigator)
         state.start(stateMachine)
 
         // when:

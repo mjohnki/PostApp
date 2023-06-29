@@ -1,20 +1,19 @@
 package de.johnki.login.state
 
 import de.johnki.data.login.LoginUseCase
+import de.johnki.navigation.AppNavigator
 import javax.inject.Inject
 
 interface LoginStateFactory {
 
     fun content(showError: Boolean): ContentState
 
-    fun loginSuccessful(): LoginSuccessfulState
-
     class Impl @Inject constructor(
-        private val loginUseCase: LoginUseCase
+        private val loginUseCase: LoginUseCase,
+        private val appNavigator: AppNavigator
     ) : LoginStateFactory {
 
-        override fun content(showError: Boolean): ContentState = ContentState(showError, loginUseCase, this)
-
-        override fun loginSuccessful(): LoginSuccessfulState = LoginSuccessfulState()
+        override fun content(showError: Boolean): ContentState =
+            ContentState(showError, loginUseCase, appNavigator, this)
     }
 }

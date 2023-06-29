@@ -32,8 +32,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun PostListScreen(
-    viewModel: PostListViewModel = hiltViewModel(), goToComments: (postId: Int) -> Unit
-) {
+    viewModel: PostListViewModel = hiltViewModel()) {
 
     val state: PostListUiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -71,8 +70,6 @@ fun PostListScreen(
                 onFavClick = {
                     viewModel.process(PostListEvent.PostFavedClicked(it))
                 })
-
-            is PostListUiState.GotoCommentsScreen -> goToComments(uiState.postId)
         }
     }
 }

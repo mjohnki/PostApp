@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "de.johnki.login"
+    namespace = "de.johnki.navigation"
     compileSdk = 33
 
     defaultConfig {
@@ -27,9 +27,6 @@ android {
             )
         }
     }
-    lint {
-        baseline = file("lint-baseline.xml")
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -37,32 +34,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":data")))
-    implementation(project(mapOf("path" to ":navigation")))
-
-    // statemachine
-    implementation(libs.statemachine)
-    implementation(libs.statemachine.coroutines)
-
-    // compose
-    implementation(libs.material3)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.lifecycle)
 
     // di
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
-
-    // test
-    testImplementation(libs.bundles.unittest)
 }
