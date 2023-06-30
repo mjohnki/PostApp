@@ -1,6 +1,6 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.detekt)
     alias(libs.plugins.hilt)
@@ -8,24 +8,14 @@ plugins {
 }
 
 android {
-    namespace = "de.johnki.postapp"
+    namespace = "de.johnki.commentlist"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "de.johnki.postapp"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-
-        lint {
-            baseline = file("lint-baseline.xml")
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -36,6 +26,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -50,29 +43,29 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":feature:login")))
-    implementation(project(mapOf("path" to ":feature:postList")))
-    implementation(project(mapOf("path" to ":feature:commentList")))
+    implementation(project(mapOf("path" to ":data")))
     implementation(project(mapOf("path" to ":navigation")))
 
-    // navigation
-    implementation(libs.navigation.ui)
+    // statemachine
+    implementation(libs.statemachine)
+    implementation(libs.statemachine.coroutines)
 
     // compose
-    implementation(libs.activity.compose)
-    implementation(libs.ui)
     implementation(libs.material3)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.lifecycle)
 
     // di
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
+
+    // logging
+    implementation(libs.timber)
+
+    // test
+    testImplementation(libs.bundles.unittest)
 }

@@ -13,7 +13,15 @@ sealed class Destination(protected val route: String, vararg params: String) {
 
     object LoginScreen : NoArgumentsDestination("Login")
 
-    object PostListScreen : NoArgumentsDestination("user_details")
+    object PostListScreen : NoArgumentsDestination("PostList")
+
+    object CommentListScreen : Destination("CommentList", "id") {
+        const val ID_KEY = "id"
+
+        operator fun invoke(id: Int): String = route.appendParams(
+            ID_KEY to id,
+        )
+    }
 }
 
 internal fun String.appendParams(vararg params: Pair<String, Any?>): String {

@@ -27,7 +27,7 @@ class AllPostsState(
     }
 
     override fun doProcess(gesture: PostListEvent) = when (gesture) {
-        is PostListEvent.PostClicked -> gotoComments()
+        is PostListEvent.PostClicked -> gotoComments(gesture.id)
         is PostListEvent.ShowFavedPostClicked -> setMachineState(factory.favedPosts())
         is PostListEvent.PostFavedClicked -> toggleFav(gesture.id)
         else -> {
@@ -35,10 +35,10 @@ class AllPostsState(
         }
     }
 
-    private fun gotoComments() {
+    private fun gotoComments(postId: Int) {
         stateScope.launch {
             // change to comments
-            appNavigator.navigateTo(Destination.PostListScreen())
+            appNavigator.navigateTo(Destination.CommentListScreen(postId))
         }
     }
 

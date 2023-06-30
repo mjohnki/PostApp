@@ -8,6 +8,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.johnki.data.AppDatabase
+import de.johnki.data.comment.CommentDao
+import de.johnki.data.comment.CommentEndpoint
+import de.johnki.data.comment.CommentRepository
 import de.johnki.data.login.UserDao
 import de.johnki.data.login.UserRepository
 import de.johnki.data.post.PostDao
@@ -40,6 +43,14 @@ internal object DataModule {
 
     @Singleton
     @Provides
+    fun providesCommentRepository(
+        dao: CommentDao,
+        endpoint: CommentEndpoint
+    ): CommentRepository =
+        CommentRepository(dao, endpoint)
+
+    @Singleton
+    @Provides
     fun provideDataBase(@ApplicationContext baseApplication: Context) : AppDatabase =
         Room.databaseBuilder(
             baseApplication,
@@ -55,6 +66,11 @@ internal object DataModule {
     @Provides
     fun providePostDao(database: AppDatabase): PostDao =
         database.postDao()
+
+    @Singleton
+    @Provides
+    fun provideCommentDao(database: AppDatabase): CommentDao =
+        database.commentDao()
 
     @Singleton
     @Provides
@@ -77,4 +93,9 @@ internal object DataModule {
     @Provides
     fun providePhotoEndpoint(retrofit: Retrofit): PostEndpoint =
         retrofit.create(PostEndpoint::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCommentEndpoint(retrofit: Retrofit): CommentEndpoint =
+        retrofit.create(CommentEndpoint::class.java)
 }

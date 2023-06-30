@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import de.johnki.commentlist.CommentListScreen
 import de.johnki.login.LoginScreen
 import de.johnki.navigation.Destination
 import de.johnki.navigation.NavigationIntent
@@ -45,6 +46,9 @@ fun MainScreen(
                 }
                 composable(route = Destination.PostListScreen.fullRoute) {
                     PostListScreen()
+                }
+                composable(route = Destination.CommentListScreen.fullRoute){
+                    CommentListScreen()
                 }
             }
         }

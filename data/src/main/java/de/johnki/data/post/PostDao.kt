@@ -16,6 +16,9 @@ internal interface PostDao {
     @Query("SELECT * FROM Post where id = :postId")
     suspend fun find(postId: Int): PostImpl
 
+    @Query("SELECT * FROM Post where id = :postId")
+    fun findPostFlow(postId: Int): Flow<PostImpl>
+
     @Query("SELECT * FROM Post where fav is 1 order by title")
     fun findFav(): Flow<List<PostImpl>>
 
