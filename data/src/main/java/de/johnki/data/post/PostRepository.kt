@@ -13,6 +13,8 @@ internal class PostRepository(
 
     suspend fun find(postId: Int) = dao.find(postId)
 
+    fun findPostFlow(postId: Int) = dao.findPostFlow(postId)
+
     fun findAll(): Flow<List<PostImpl>> = dao.findAll()
 
     fun findFav(): Flow<List<PostImpl>> = dao.findFav()

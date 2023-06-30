@@ -3,6 +3,7 @@ package de.johnki.postlist
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun PostListScreen(
-    viewModel: PostListViewModel = hiltViewModel()) {
+    viewModel: PostListViewModel = hiltViewModel()
+) {
 
     val state: PostListUiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -56,6 +58,9 @@ fun PostListScreen(
                 },
                 onFavClick = {
                     viewModel.process(PostListEvent.PostFavedClicked(it))
+                },
+                onPostClick = {
+                    viewModel.process(PostListEvent.PostClicked(it))
                 })
 
             is PostListUiState.FavedPosts -> PostsState(
@@ -69,6 +74,9 @@ fun PostListScreen(
                 },
                 onFavClick = {
                     viewModel.process(PostListEvent.PostFavedClicked(it))
+                },
+                onPostClick = {
+                    viewModel.process(PostListEvent.PostClicked(it))
                 })
         }
     }
@@ -79,18 +87,21 @@ private fun LoadingState() {
     Text(text = "Loading")
 }
 
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 private fun PostsState(
     data: Flow<List<Post>>,
     showAllPosts: () -> Unit,
     showFavPosts: () -> Unit,
+    onPostClick: (postId: Int) -> Unit,
     onFavClick: (postId: Int) -> Unit,
     allActive: Boolean
 ) {
     val posts: List<Post> by data.collectAsStateWithLifecycle(emptyList())
 
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         val (header, content, footer) = createRefs()
 
@@ -98,7 +109,13 @@ private fun PostsState(
             top.linkTo(header.bottom)
             bottom.linkTo(footer.top)
         }) {
-            items(items = posts) { Post(it, onFavClick) }
+            items(items = posts) {
+                Post(
+                    post = it,
+                    onFavClick = onFavClick,
+                    onPostClick = onPostClick
+                )
+            }
         }
 
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier
@@ -152,13 +169,18 @@ private fun PostsState(
 
 @Suppress("MagicNumber")
 @Composable
-private fun Post(post: Post, onFavClick: (postId: Int) -> Unit) {
+private fun Post(
+    post: Post,
+    onFavClick: (postId: Int) -> Unit,
+    onPostClick: (postId: Int) -> Unit,
+) {
 
     Column(
         Modifier
             .padding(8.dp)
             .border(BorderStroke(2.dp, MaterialTheme.colorScheme.secondary))
             .padding(8.dp)
+            .clickable { onPostClick(post.id) }
     ) {
         Row(Modifier.padding(bottom = 24.dp)) {
             Text(modifier = Modifier.weight(5f), text = post.title)

@@ -73,7 +73,7 @@ class AllPostsStateTest {
         advanceUntilIdle()
 
         // when:
-        coVerify { appNavigator.navigateTo(Destination.PostListScreen()) }
+        coVerify { appNavigator.navigateTo(Destination.CommentListScreen(postId)) }
     }
 
     @Test

@@ -6,6 +6,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import de.johnki.data.comment.CommentRepository
+import de.johnki.data.comment.FindPostCommentsUseCase
+import de.johnki.data.comment.FindPostCommentsUseCaseImpl
+import de.johnki.data.comment.UpdatePostCommentsUseCase
+import de.johnki.data.comment.UpdatePostCommentsUseCaseImpl
 import de.johnki.data.login.LoginUseCase
 import de.johnki.data.login.LoginUseCaseImpl
 import de.johnki.data.login.UserRepository
@@ -49,7 +54,25 @@ internal class UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun providesUpdatePostsUseCase(userRepository: UserRepository, postRepository: PostRepository): UpdatePostsUseCase {
+    fun providesUpdatePostsUseCase(
+        userRepository: UserRepository,
+        postRepository: PostRepository
+    ): UpdatePostsUseCase {
         return UpdatePostsUseCaseImpl(userRepository, postRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun providesUpdatePostCommentsUseCase(commentRepository: CommentRepository): UpdatePostCommentsUseCase {
+        return UpdatePostCommentsUseCaseImpl(commentRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun providesFindPostCommentsUseCase(
+        postRepository: PostRepository,
+        commentRepository: CommentRepository
+    ): FindPostCommentsUseCase {
+        return FindPostCommentsUseCaseImpl(postRepository, commentRepository)
     }
 }
